@@ -14,7 +14,7 @@ def create_test_post() -> Post:
         title="Título de Exemplo",
         description="Descrição de Exemplo",
         content="Conteúdo do post",
-        author="Autor X",
+        author=str(uuid.uuid4()),
         date="2025-06-09"
     )
 
@@ -72,7 +72,7 @@ def test_update_post():
         title="Título Atualizado",
         description="Descrição Atualizada",
         content="Novo conteúdo",
-        author="Autor X",
+        author=str(uuid.uuid4()),
         date="2025-06-10"
     )
 

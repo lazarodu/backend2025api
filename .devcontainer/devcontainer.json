@@ -1,7 +1,7 @@
 {
   "name": "Blog API Dev",
   "context": "..",
-  "dockerFile": "../Dockerfile",
+  "dockerFile": "../Dockerfile.dev",
   "workspaceFolder": "/home/devuser/app",
   "remoteUser": "devuser",
   "settings": {
