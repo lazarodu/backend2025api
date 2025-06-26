@@ -16,6 +16,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
       - name: Build Docker image
+        working-directory: ./
         run: docker build -f backend/Dockerfile.prod -t ${{ secrets.DOCKER_HUB_USERNAME }}/blog-api:latest backend
 
       - name: Push to Docker Hub
