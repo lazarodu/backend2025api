@@ -3,28 +3,28 @@ name: Deploy to Vercel
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
-    name: Build and Deploy Docker to Vercel
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       # - name: Log in to Docker Hub
-      #   run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      #   run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
-      # - name: Build and push Docker image
-      #   run: |
-      #     docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/blog-backend:latest -f Dockerfile.prod .
-      #     docker push ${{ secrets.DOCKERHUB_USERNAME }}/blog-backend:latest
+      # - name: Build Docker image
+      #   run: docker build -f backend/Dockerfile.prod -t ${{ secrets.DOCKER_HUB_USERNAME }}/blog-api:latest backend
 
-      - name: Trigger Vercel Deployment (API)
-        run: |
-          curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_${{ secrets.VERCEL_PROJECT_ID }} \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d '{}'
+      # - name: Push to Docker Hub
+      #   run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/blog-api:latest
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./backend
