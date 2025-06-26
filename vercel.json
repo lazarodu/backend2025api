@@ -1,9 +1,14 @@
 {
   "version": 2,
-  "builds": [
+  "images": {
+    "blogapi": {
+      "name": "lazarodu/blog-api:latest"
+    }
+  },
+  "routes": [
     {
-      "src": "Dockerfile.prod",
-      "use": "@vercel/docker"
+      "src": "/(.*)",
+      "dest": "blogapi"
     }
   ]
 }
