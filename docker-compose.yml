@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    container_name: blog
     volumes:
       - .:/app
     ports:
@@ -12,20 +13,26 @@ services:
     depends_on:
       - db
     command: ["pytest", "--maxfail=1", "--disable-warnings", "-v"]
+    networks:
+      - minha_rede_app
 
   db:
     image: postgres:17.5
     restart: unless-stopped
+    container_name: db
     env_file:
       - backend/.env
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - minha_rede_app
 
   pgadmin:
     image: dpage/pgadmin4
     restart: always
+    container_name: pgadmin
     env_file:
       - backend/.env
     ports:
@@ -34,7 +41,13 @@ services:
       - db
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - minha_rede_app
 
 volumes:
   postgres_data:
   pgadmin_data:
+
+networks:
+  minha_rede_app:
+    driver: bridge

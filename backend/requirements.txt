@@ -17,6 +17,7 @@ pydantic>=2.11.7
 sqlalchemy>=2.0
 asyncpg>=0.30
 alembic>=1.16
+psycopg2-binary>=2.9.6
 
 types-passlib
 types-python-jose
