@@ -1,16 +1,9 @@
 {
   "version": 2,
-  "devCommand": "uvicorn main:app --host 0.0.0.0 --port 3000",
   "builds": [
     {
-      "src": "blog/api/main.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "blog/api/main.py"
+      "src": "Dockerfile.prod",
+      "use": "@vercel/docker"
     }
   ]
 }
