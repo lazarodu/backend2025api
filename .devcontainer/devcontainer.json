@@ -4,7 +4,9 @@
   "service": "blog",
   "workspaceFolder": "/home/devuser/app",
   "remoteUser": "devuser",
-  "forwardPorts": [8000],
+  "forwardPorts": [
+    8080
+  ],
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash",
     "python.defaultInterpreterPath": "/usr/local/bin/python"
