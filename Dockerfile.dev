@@ -11,9 +11,12 @@ WORKDIR /home/devuser/app
 
 # Copia arquivos e instala dependências
 COPY backend/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copia o restante do projeto
 COPY . .
+
+EXPOSE 8080
 
 CMD ["uvicorn", "blog.api.main:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]

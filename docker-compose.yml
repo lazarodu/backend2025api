@@ -6,13 +6,15 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     container_name: blog
+    env_file:
+      - backend/.env
     volumes:
       - .:/app
     ports:
       - "8080:8080"
     depends_on:
       - db
-    command: ["pytest", "--maxfail=1", "--disable-warnings", "-v"]
+    command: uvicorn blog.api.main:app --host 0.0.0.0 --port 8080 --reload
     networks:
       - minha_rede_app
 

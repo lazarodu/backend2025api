@@ -1,9 +1,10 @@
 {
   "name": "Blog API Dev",
-  "context": "..",
-  "dockerFile": "../Dockerfile.dev",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "blog",
   "workspaceFolder": "/home/devuser/app",
   "remoteUser": "devuser",
+  "forwardPorts": [8000],
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash",
     "python.defaultInterpreterPath": "/usr/local/bin/python"
@@ -15,6 +16,8 @@
   "extensions": [
     "ms-python.python",
     "ms-python.vscode-pylance",
-    "ms-vscode.makefile-tools"
+    "ms-vscode.makefile-tools",
+    "ms-azuretools.vscode-docker",
+    "humao.rest-client"
   ]
 }
