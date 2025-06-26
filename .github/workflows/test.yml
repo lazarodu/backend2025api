@@ -43,3 +43,6 @@ jobs:
 
       - name: Run tests with coverage
         run: make test-cov
+
+      - name: Verifica se o código está formatado
+        run: make lint

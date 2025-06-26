@@ -16,7 +16,7 @@ def create_test_user() -> User:
         name="Test User",
         email=Email("test@example.com"),
         password=Password("secur3@Pass"),
-        role="user"
+        role="user",
     )
 
 

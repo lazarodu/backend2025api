@@ -2,6 +2,7 @@ from sqlalchemy import Column, String, Text, DateTime
 from blog.infra.database import Base
 from datetime import datetime
 
+
 class PostModel(Base):
     __tablename__ = "posts"
 

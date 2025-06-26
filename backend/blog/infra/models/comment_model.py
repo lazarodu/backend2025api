@@ -2,6 +2,7 @@ from sqlalchemy import Column, String, Text, DateTime, ForeignKey
 from blog.infra.database import Base
 from datetime import datetime
 
+
 class CommentModel(Base):
     __tablename__ = "comments"
 

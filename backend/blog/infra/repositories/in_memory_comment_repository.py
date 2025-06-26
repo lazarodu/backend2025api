@@ -1,6 +1,6 @@
 from blog.domain.repositories.comment_repository import CommentRepository
 from blog.domain.entities.comment import Comment
-from typing import List
+from typing import List, Optional
 
 
 class InMemoryCommentRepository(CommentRepository):

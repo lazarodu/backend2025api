@@ -7,15 +7,17 @@ from blog.usecases.post.get_post_by_id import GetPostByIdUseCase
 from blog.usecases.post.update_post import UpdatePostUseCase
 from blog.domain.entities.post import Post
 import uuid
-from blog.api.schemas.post import PostOutput, PostCreateInput, PostUpdateInput
+from blog.api.schemas.post_schema import PostOutput, PostCreateInput, PostUpdateInput
 
 router = APIRouter()
+
 
 @router.get("/", response_model=PostOutput)
 def get_all_posts():
     usecase = GetAllPostsUseCase(post_repo)
     posts = usecase.execute()
     return posts
+
 
 @router.get("/{post_id}", response_model=PostOutput)
 def get_post_by_id(post_id: str):
@@ -25,6 +27,7 @@ def get_post_by_id(post_id: str):
         raise HTTPException(status_code=404, detail="Post not found")
     return post
 
+
 @router.post("/", response_model=PostOutput)
 def create_post(data: PostCreateInput):
     post = Post(
@@ -32,12 +35,13 @@ def create_post(data: PostCreateInput):
         title=data.title,
         description=data.description,
         content=data.content,
-        autor=data.autor,
-        data=data.data
+        user_id=data.user_id,
+        date=data.date,
     )
     usecase = CreatePostUseCase(post_repo)
     created_post = usecase.execute(post)
     return created_post
+
 
 @router.put("/{post_id}", response_model=PostOutput)
 def update_post(post_id: str, data: PostUpdateInput):
@@ -51,12 +55,13 @@ def update_post(post_id: str, data: PostUpdateInput):
         title=data.title,
         description=data.description,
         content=data.content,
-        autor=data.autor,
-        data=data.data
+        user_id=existing_post.user_id,
+        date=existing_post.date,
     )
     usecase_update = UpdatePostUseCase(post_repo)
     result = usecase_update.execute(updated_post)
     return result
+
 
 @router.delete("/{post_id}")
 def delete_post(post_id: str):

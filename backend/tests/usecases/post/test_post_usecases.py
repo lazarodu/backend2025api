@@ -14,8 +14,8 @@ def create_test_post() -> Post:
         title="Título de Exemplo",
         description="Descrição de Exemplo",
         content="Conteúdo do post",
-        author=str(uuid.uuid4()),
-        date="2025-06-09"
+        user_id=str(uuid.uuid4()),
+        date="2025-06-09",
     )
 
 
@@ -55,12 +55,14 @@ def test_get_post_by_id():
 
     assert result == post
 
+
 def test_get_post_by_id_not_found():
     repo = InMemoryPostRepository()
     usecase = GetPostByIdUseCase(repo)
     result = usecase.execute("id-invalido")
 
     assert result is None
+
 
 def test_update_post():
     repo = InMemoryPostRepository()
@@ -72,8 +74,8 @@ def test_update_post():
         title="Título Atualizado",
         description="Descrição Atualizada",
         content="Novo conteúdo",
-        author=str(uuid.uuid4()),
-        date="2025-06-10"
+        user_id=str(uuid.uuid4()),
+        date="2025-06-10",
     )
 
     usecase = UpdatePostUseCase(repo)
@@ -81,6 +83,7 @@ def test_update_post():
 
     assert result.title == "Título Atualizado"
     assert repo.get_by_id(post.id).content == "Novo conteúdo"
+
 
 def test_update_post_not_found():
     repo = InMemoryPostRepository()
@@ -101,7 +104,8 @@ def test_delete_post():
     usecase.execute(post.id)
 
     assert repo.get_by_id(post.id) is None
-    
+
+
 def test_delete_post_not_found():
     repo = InMemoryPostRepository()
     usecase = DeletePostUseCase(repo)

@@ -5,5 +5,6 @@ class DeletePostUseCase:
     def __init__(self, repository: PostRepository):
         self.repository = repository
 
-    def execute(self, post_id: str) -> None:
+    def execute(self, post_id: str) -> bool:
         self.repository.delete(post_id)
+        return True

@@ -11,13 +11,19 @@ from blog.domain.value_objects.email_vo import Email
 from blog.domain.value_objects.password import Password
 import uuid
 
-from blog.api.schemas.user import RegisterUserInput, LoginUserInput, UserOutput, SetCurrentUserInput
+from blog.api.schemas.user_schema import (
+    RegisterUserInput,
+    LoginUserInput,
+    UserOutput,
+    SetCurrentUserInput,
+)
 
 router = APIRouter()
 
 # ----------------------
 # Register
 # ----------------------
+
 
 @router.post(
     "/register",
@@ -32,20 +38,22 @@ def register_user(data: RegisterUserInput):
             name=data.name,
             email=Email(data.email),
             password=Password(data.password),
-            role=data.role
+            role=data.role,
         )
         usecase = RegisterUserUseCase(user_repo)
         result = usecase.execute(user)
-        return {"message": "User registered successfully", "user_id": result.id}
+        return {"message": "User registered successfully", "user": result}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 # ----------------------
 # Login
 # ----------------------
 
+
 @router.post(
-    "/login", 
+    "/login",
     response_model=UserOutput,
     summary="Fazer o Login do usuário",
     description="Autentica um usuário com email e senha forte.",
@@ -54,47 +62,38 @@ def login_user(data: LoginUserInput):
     try:
         usecase = LoginUserUseCase(user_repo)
         result = usecase.execute(Email(data.email), Password(data.password))
-        return {"message": "Login successful", "user": result.name}
+        return {"message": "Login successful", "user": result}
     except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))
+
 
 # ----------------------
 # Logout
 # ----------------------
 
-@router.post("/logout",
+
+@router.post(
+    "/logout",
     summary="Fazer o Logout do usuário",
-    description="Descredencia o usuário autenticado."
+    description="Descredencia o usuário autenticado.",
 )
 def logout_user():
     usecase = LogoutUserUseCase(user_repo)
     usecase.execute()
     return {"message": "Logout successful"}
 
-# ----------------------
-# Set Current User
-# ----------------------
-
-@router.post("/set-current",
-    summary="Define o usuário atual",
-    description="Define o usuário que está usando o blog."
-)
-def set_current_user(data: SetCurrentUserInput):
-    try:
-        usecase = SetCurrentUserUseCase(user_repo)
-        usecase.execute(data.user_id)
-        return {"message": "Current user set"}
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
 
 # ----------------------
 # Get Current User
 # ----------------------
 
-@router.get("/me", response_model=UserOutput,
+
+@router.get(
+    "/me",
+    response_model=UserOutput,
     summary="Informar os dados do usuário atual",
-    description="Retorna os dados do usuário atual."
-    )
+    description="Retorna os dados do usuário atual.",
+)
 def get_current_user():
     try:
         usecase = GetCurrentUserUseCase(user_repo)
@@ -103,7 +102,7 @@ def get_current_user():
             "id": result.id,
             "name": result.name,
             "email": str(result.email),
-            "role": result.role
+            "role": result.role,
         }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))

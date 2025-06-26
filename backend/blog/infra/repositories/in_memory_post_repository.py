@@ -2,6 +2,7 @@ from blog.domain.repositories.post_repository import PostRepository
 from blog.domain.entities.post import Post
 from typing import List, Optional
 
+
 class InMemoryPostRepository(PostRepository):
     def __init__(self):
         self._posts = {}
@@ -12,7 +13,7 @@ class InMemoryPostRepository(PostRepository):
     def get_by_id(self, post_id: str) -> Optional[Post]:
         return self._posts.get(post_id)
 
-    def create(self, post: Post) -> Post:
+    def create(self, post: Post) -> Optional[Post]:
         self._posts[post.id] = post
         return post
 

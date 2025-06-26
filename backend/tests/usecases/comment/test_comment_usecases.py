@@ -1,6 +1,8 @@
 import uuid
 from blog.domain.entities.comment import Comment
-from blog.infra.repositories.in_memory_comment_repository import InMemoryCommentRepository
+from blog.infra.repositories.in_memory_comment_repository import (
+    InMemoryCommentRepository,
+)
 from blog.usecases.comment.add_comment import AddCommentUseCase
 from blog.usecases.comment.delete_comment import DeleteCommentUseCase
 from blog.usecases.comment.get_comments_by_post import GetCommentsByPostUseCase
@@ -13,7 +15,7 @@ def create_test_comment(user_id=None, post_id=None) -> Comment:
         post_id=post_id or str(uuid.uuid4()),
         user_id=user_id or str(uuid.uuid4()),
         comment="Comentário de teste",
-        date="2025-06-09"
+        date="2025-06-09",
     )
 
 
