@@ -15,7 +15,7 @@ from blog.api.schemas.user_schema import (
     RegisterUserInput,
     LoginUserInput,
     UserOutput,
-    SetCurrentUserInput,
+    RegisterUserResponse,
 )
 
 router = APIRouter()
@@ -27,7 +27,7 @@ router = APIRouter()
 
 @router.post(
     "/register",
-    response_model=UserOutput,
+    response_model=RegisterUserResponse,
     summary="Registrar novo usuário",
     description="Cria um novo usuário com nome, email e senha forte.",
 )
@@ -42,7 +42,15 @@ def register_user(data: RegisterUserInput):
         )
         usecase = RegisterUserUseCase(user_repo)
         result = usecase.execute(user)
-        return {"message": "User registered successfully", "user": result}
+        return RegisterUserResponse(
+            message="User registered successfully",
+            result=UserOutput(
+                id=result.id,
+                name=result.name,
+                email=str(result.email.value),
+                role=result.role,
+            ),
+        )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 

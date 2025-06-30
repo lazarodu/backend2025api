@@ -32,3 +32,8 @@ class UserOutput(BaseModel):
             email=user.email.value,
             role=user.role,
         )
+
+
+class RegisterUserResponse(BaseModel):
+    message: str
+    user: UserOutput
