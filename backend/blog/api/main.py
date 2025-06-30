@@ -12,9 +12,11 @@ app = FastAPI(
     openapi_tags=openapi_tags,
 )
 
+
 @app.get("/")
 def ola():
     return {"olá": "fastapi"}
+
 
 app.include_router(user_route.router, prefix="/users", tags=["Users"])
 app.include_router(post_route.router, prefix="/posts", tags=["Posts"])
