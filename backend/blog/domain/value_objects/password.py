@@ -9,6 +9,7 @@ class PasswordValidationError(Exception):
 class Password:
     def __init__(self, plain_password: str, hashed: bool = False):
         if not hashed:
+            print(plain_password)
             self.validate(plain_password)
             self._hashed = get_password_hash(plain_password)
         else:

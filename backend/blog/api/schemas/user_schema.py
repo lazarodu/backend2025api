@@ -34,6 +34,6 @@ class UserOutput(BaseModel):
         )
 
 
-class RegisterUserResponse(BaseModel):
+class MessageUserResponse(BaseModel):
     message: str
     user: UserOutput
