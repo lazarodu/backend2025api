@@ -21,6 +21,7 @@ class SQLAlchemyUserRepository(UserRepository):
         self._session.add(model)
         await self._session.commit()
         await self._session.refresh(model)
+        user.id = model.id
         return model.to_entity()
 
     async def login(self, email: Email, password: Password) -> Optional[User]:
@@ -28,12 +29,19 @@ class SQLAlchemyUserRepository(UserRepository):
         result = await self._session.execute(stmt)
         user = result.scalar_one_or_none()
 
-        if user and user.password == password.verify(user.password):
+        if user and password.verify(user.password):
             self._current_user = user.to_entity()
             return self._current_user
         return None
 
-    async def get_current_user(self) -> Optional[User]:
+    async def get_current_user(self, user_id: str) -> Optional[User]:
+        stmt = select(UserModel).where(UserModel.id == str(user_id))
+        result = await self._session.execute(stmt)
+        user = result.scalar_one_or_none()
+        if user:
+            self._current_user = user.to_entity()
+        else:
+            self._current_user = None
         return self._current_user
 
     async def set_current_user(self, user: User) -> None:
@@ -41,3 +49,9 @@ class SQLAlchemyUserRepository(UserRepository):
 
     async def logout(self) -> None:
         self._current_user = None
+
+    async def get_by_email(self, email: Email) -> Optional[User]:
+        stmt = select(UserModel).where(UserModel.email == str(email))
+        result = await self._session.execute(stmt)
+        user_model = result.scalar_one_or_none()
+        return user_model.to_entity() if user_model else None

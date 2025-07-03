@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, Depends
-from fastapi.security import OAuth2PasswordRequestForm
 from blog.usecases.user.register_user import RegisterUserUseCase
 from blog.usecases.user.login_user import LoginUserUseCase
 from blog.usecases.user.logout_user import LogoutUserUseCase
@@ -13,7 +12,7 @@ from blog.api.deps import get_db_session, get_user_repository, get_current_user
 from blog.infra.repositories.sqlalchemy.sqlalchemy_user_repository import (
     SQLAlchemyUserRepository,
 )
-
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from blog.api.schemas.user_schema import (
     RegisterUserInput,
     UserOutput,
@@ -22,7 +21,10 @@ from blog.api.schemas.user_schema import (
 from blog.api.schemas.token_schema import TokenResponse
 from blog.api.security import create_access_token
 from blog.domain.repositories.user_repository import UserRepository
+from blog.api.schemas.user_schema import LoginUserInput
+from blog.api.security import verify_token
 
+security = HTTPBearer()
 router = APIRouter()
 
 # ----------------------
@@ -71,7 +73,7 @@ async def register_user(
     description="Autentica um usuário com email e senha forte.",
 )
 async def login_user(
-    data: OAuth2PasswordRequestForm = Depends(),
+    data: LoginUserInput = Depends(),
     user_repo: UserRepository = Depends(get_user_repository),
 ):
     try:
@@ -98,11 +100,12 @@ async def login_user(
     description="Descredencia o usuário autenticado.",
 )
 async def logout_user(
-    user: User = Depends(get_current_user),
+    credentials: HTTPAuthorizationCredentials = Depends(security),
     user_repo: UserRepository = Depends(get_user_repository),
+    user: str = Depends(get_current_user),
 ):
     usecase = LogoutUserUseCase(user_repo)
-    await usecase.execute(user.id)
+    await usecase.execute()
     return {"message": "Logout successful"}
 
 
@@ -117,10 +120,14 @@ async def logout_user(
     summary="Informar os dados do usuário atual",
     description="Retorna os dados do usuário atual.",
 )
-async def get_current_user():
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    user_repo: UserRepository = Depends(get_user_repository),
+    user: str = Depends(get_current_user),
+):
     try:
         usecase = GetCurrentUserUseCase(user_repo)
-        result = usecase.execute()
+        result = await usecase.execute(user.id)
         return {
             "id": result.id,
             "name": result.name,

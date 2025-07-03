@@ -7,5 +7,5 @@ class GetAllPostsUseCase:
     def __init__(self, repository: PostRepository):
         self.repository = repository
 
-    def execute(self) -> List[Post]:
-        return self.repository.get_all()
+    async def execute(self) -> List[Post]:
+        return await self.repository.get_all()

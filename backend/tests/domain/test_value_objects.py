@@ -33,13 +33,13 @@ def test_criar_password_valido():
     senha = "Senha@123!"
     password = Password(senha)
     assert isinstance(password, Password)
-    assert password.verify(senha)
+    assert password.verify(Password(senha)._hashed)
 
 
 # Teste de verificação com senha incorreta
 def test_password_invalida_nao_verifica():
     senha = "Senha@123!"
-    outra_senha = "Errada456@"
+    outra_senha = Password("Errada456@")._hashed
     password = Password(senha)
     assert not password.verify(outra_senha)
 

@@ -8,8 +8,8 @@ class PasswordValidationError(Exception):
 
 class Password:
     def __init__(self, plain_password: str, hashed: bool = False):
+        self._plain_password = plain_password
         if not hashed:
-            print(plain_password)
             self.validate(plain_password)
             self._hashed = get_password_hash(plain_password)
         else:
@@ -33,8 +33,8 @@ class Password:
                 "A senha deve conter pelo menos um caractere especial."
             )
 
-    def verify(self, plain_password: str) -> bool:
-        return verify_password(plain_password, self._hashed)
+    def verify(self, db: str) -> bool:
+        return verify_password(self._plain_password, db)
 
     def __eq__(self, other) -> bool:
         return isinstance(other, Password) and self._hashed == other._hashed

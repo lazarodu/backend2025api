@@ -15,7 +15,7 @@ class CommentModel(Base):
     comment: Mapped[str] = mapped_column(sa.Text, nullable=False)
     post_id: Mapped[str] = mapped_column(sa.String, sa.ForeignKey("posts.id"))
     user_id: Mapped[str] = mapped_column(sa.String, sa.ForeignKey("users.id"))
-    date: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.utcnow)
+    date: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.now())
 
     post = relationship("PostModel", back_populates="comments")
     user = relationship("UserModel", back_populates="comments")

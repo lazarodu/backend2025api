@@ -7,5 +7,5 @@ class UpdatePostUseCase:
     def __init__(self, repository: PostRepository):
         self.repository = repository
 
-    def execute(self, post: Post) -> Optional[Post]:
-        return self.repository.update(post)
+    async def execute(self, post: Post) -> Optional[Post]:
+        return await self.repository.update(post)

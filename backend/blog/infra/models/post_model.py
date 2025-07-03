@@ -16,7 +16,7 @@ class PostModel(Base):
     description: Mapped[str] = mapped_column(sa.String, nullable=False)
     content: Mapped[str] = mapped_column(sa.Text, nullable=False)
     user_id: Mapped[str] = mapped_column(sa.String, sa.ForeignKey("users.id"))
-    date: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.utcnow)
+    date: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.now())
 
     user = relationship("UserModel", back_populates="posts")
     comments = relationship(

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.security import HTTPBearer
 from blog.api.routes import comment_route, post_route, user_route
 from blog.api.openapi_tags import openapi_tags
 

@@ -8,14 +8,14 @@ from blog.infra.models.post_model import PostModel
 
 class SQLAlchemyPostRepository(PostRepository):
     def __init__(self, session: AsyncSession):
-        self.session = session
+        self._session = session
 
     async def get_all(self) -> List[Post]:
-        result = await self.session.execute(select(PostModel))
+        result = await self._session.execute(select(PostModel))
         return [post.to_entity() for post in result.scalars().all()]
 
     async def get_by_id(self, post_id: str) -> Optional[Post]:
-        result = await self.session.execute(
+        result = await self._session.execute(
             select(PostModel).where(PostModel.id == post_id)
         )
         post = result.scalar_one_or_none()
@@ -23,9 +23,9 @@ class SQLAlchemyPostRepository(PostRepository):
 
     async def create(self, post: Post) -> Post:
         db_post = PostModel.from_entity(post)
-        self.session.add(db_post)
-        await self.session.commit()
-        await self.session.refresh(db_post)
+        self._session.add(db_post)
+        await self._session.commit()
+        await self._session.refresh(db_post)
         return db_post.to_entity()
 
     async def update(self, post: Post) -> Optional[Post]:
@@ -36,17 +36,16 @@ class SQLAlchemyPostRepository(PostRepository):
                 title=post.title,
                 description=post.description,
                 content=post.content,
-                author=post.author,
                 user_id=post.user_id,
                 date=post.date,
             )
             .returning(PostModel)
         )
-        result = await self.session.execute(stmt)
-        await self.session.commit()
+        result = await self._session.execute(stmt)
+        await self._session.commit()
         updated = result.scalar_one_or_none()
         return updated.to_entity() if updated else None
 
     async def delete(self, post_id: str) -> None:
-        await self.session.execute(delete(PostModel).where(PostModel.id == post_id))
-        await self.session.commit()
+        await self._session.execute(delete(PostModel).where(PostModel.id == post_id))
+        await self._session.commit()

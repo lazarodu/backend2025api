@@ -2,7 +2,7 @@ import uuid
 from blog.domain.entities.user import User
 from blog.domain.value_objects.email_vo import Email
 from blog.domain.value_objects.password import Password
-from blog.infra.repositories.in_memory_user_repository import InMemoryUserRepository
+from blog.infra.repositories.in_memory.in_memory_user_repository import InMemoryUserRepository
 from blog.usecases.user.register_user import RegisterUserUseCase
 from blog.usecases.user.login_user import LoginUserUseCase
 from blog.usecases.user.logout_user import LogoutUserUseCase

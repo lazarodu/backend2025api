@@ -7,6 +7,12 @@ from blog.domain.repositories.user_repository import UserRepository
 from blog.infra.repositories.sqlalchemy.sqlalchemy_user_repository import (
     SQLAlchemyUserRepository,
 )
+from blog.infra.repositories.sqlalchemy.sqlalchemy_post_repository import (
+    SQLAlchemyPostRepository,
+)
+from blog.infra.repositories.sqlalchemy.sqlalchemy_comment_repository import (
+    SQLAlchemyCommentRepository,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 from blog.infra.database import async_session
 from blog.domain.entities.user import User
@@ -21,6 +27,18 @@ async def get_user_repository(
     db: AsyncSession = Depends(get_db_session),
 ) -> SQLAlchemyUserRepository:
     return SQLAlchemyUserRepository(db)
+
+
+async def get_post_repository(
+    db: AsyncSession = Depends(get_db_session),
+) -> SQLAlchemyUserRepository:
+    return SQLAlchemyPostRepository(db)
+
+
+async def get_comment_repository(
+    db: AsyncSession = Depends(get_db_session),
+) -> SQLAlchemyUserRepository:
+    return SQLAlchemyCommentRepository(db)
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")

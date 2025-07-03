@@ -29,7 +29,7 @@ class UserOutput(BaseModel):
         return cls(
             id=user.id,
             name=user.name,
-            email=user.email.value,
+            email=str(user.email),
             role=user.role,
         )
 
