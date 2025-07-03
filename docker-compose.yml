@@ -25,9 +25,24 @@ services:
     env_file:
       - backend/.env
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - minha_rede_app
+
+  db_test:
+    image: postgres:17.5
+    restart: unless-stopped
+    container_name: db_test
+    environment:
+      POSTGRES_DB: blog_test
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_test:/var/lib/postgresql/data
     networks:
       - minha_rede_app
 
@@ -49,6 +64,7 @@ services:
 volumes:
   postgres_data:
   pgadmin_data:
+  pgdata_test:
 
 networks:
   minha_rede_app:

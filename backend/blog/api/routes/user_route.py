@@ -73,7 +73,7 @@ async def register_user(
     description="Autentica um usuário com email e senha forte.",
 )
 async def login_user(
-    data: LoginUserInput = Depends(),
+    data: LoginUserInput,
     user_repo: UserRepository = Depends(get_user_repository),
 ):
     try:
@@ -87,26 +87,6 @@ async def login_user(
         raise HTTPException(status_code=400, detail=str(p))
     except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))
-
-
-# ----------------------
-# Logout
-# ----------------------
-
-
-@router.post(
-    "/logout",
-    summary="Fazer o Logout do usuário",
-    description="Descredencia o usuário autenticado.",
-)
-async def logout_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-    user_repo: UserRepository = Depends(get_user_repository),
-    user: str = Depends(get_current_user),
-):
-    usecase = LogoutUserUseCase(user_repo)
-    await usecase.execute()
-    return {"message": "Logout successful"}
 
 
 # ----------------------

@@ -1,4 +1,5 @@
 import uuid
+import pytest
 from blog.domain.entities.comment import Comment
 from blog.infra.repositories.in_memory.in_memory_comment_repository import (
     InMemoryCommentRepository,
@@ -19,6 +20,7 @@ def create_test_comment(user_id=None, post_id=None) -> Comment:
     )
 
 
+@pytest.mark.asyncio
 async def test_add_comment():
     repo = InMemoryCommentRepository()
     comment = create_test_comment()
@@ -30,6 +32,7 @@ async def test_add_comment():
     assert repo._comments[comment.id] == comment
 
 
+@pytest.mark.asyncio
 async def test_get_comments_by_post():
     repo = InMemoryCommentRepository()
     post_id = str(uuid.uuid4())
@@ -37,9 +40,9 @@ async def test_get_comments_by_post():
     comment2 = create_test_comment(post_id=post_id)
     comment_other = create_test_comment()
 
-    repo.add_comment(comment1)
-    repo.add_comment(comment2)
-    repo.add_comment(comment_other)
+    await repo.add_comment(comment1)
+    await repo.add_comment(comment2)
+    await repo.add_comment(comment_other)
 
     usecase = GetCommentsByPostUseCase(repo)
     result = await usecase.execute(post_id)
@@ -50,6 +53,7 @@ async def test_get_comments_by_post():
     assert len(result) == 2
 
 
+@pytest.mark.asyncio
 async def test_get_comments_by_post_empty():
     repo = InMemoryCommentRepository()
     usecase = GetCommentsByPostUseCase(repo)
@@ -58,6 +62,7 @@ async def test_get_comments_by_post_empty():
     assert result == []
 
 
+@pytest.mark.asyncio
 async def test_get_comments_by_user():
     repo = InMemoryCommentRepository()
     user_id = str(uuid.uuid4())
@@ -65,9 +70,9 @@ async def test_get_comments_by_user():
     comment2 = create_test_comment(user_id=user_id)
     comment_other = create_test_comment()
 
-    repo.add_comment(comment1)
-    repo.add_comment(comment2)
-    repo.add_comment(comment_other)
+    await repo.add_comment(comment1)
+    await repo.add_comment(comment2)
+    await repo.add_comment(comment_other)
 
     usecase = GetCommentsByUserUseCase(repo)
     result = await usecase.execute(user_id)
@@ -78,6 +83,7 @@ async def test_get_comments_by_user():
     assert len(result) == 2
 
 
+@pytest.mark.asyncio
 async def test_get_comments_by_user_empty():
     repo = InMemoryCommentRepository()
     usecase = GetCommentsByUserUseCase(repo)
@@ -86,10 +92,11 @@ async def test_get_comments_by_user_empty():
     assert result == []
 
 
+@pytest.mark.asyncio
 async def test_delete_comment():
     repo = InMemoryCommentRepository()
     comment = create_test_comment()
-    repo.add_comment(comment)
+    await repo.add_comment(comment)
 
     usecase = DeleteCommentUseCase(repo)
     await usecase.execute(comment.id)
@@ -97,6 +104,7 @@ async def test_delete_comment():
     assert comment.id not in repo._comments
 
 
+@pytest.mark.asyncio
 async def test_delete_comment_not_found():
     repo = InMemoryCommentRepository()
     usecase = DeleteCommentUseCase(repo)

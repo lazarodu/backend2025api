@@ -1,6 +1,9 @@
 import uuid
+import pytest
 from blog.domain.entities.post import Post
-from blog.infra.repositories.in_memory.in_memory_post_repository import InMemoryPostRepository
+from blog.infra.repositories.in_memory.in_memory_post_repository import (
+    InMemoryPostRepository,
+)
 from blog.usecases.post.create_post import CreatePostUseCase
 from blog.usecases.post.delete_post import DeletePostUseCase
 from blog.usecases.post.get_all_posts import GetAllPostsUseCase
@@ -19,6 +22,7 @@ def create_test_post() -> Post:
     )
 
 
+@pytest.mark.asyncio
 async def test_create_post():
     repo = InMemoryPostRepository()
     usecase = CreatePostUseCase(repo)
@@ -27,15 +31,16 @@ async def test_create_post():
     result = await usecase.execute(post)
 
     assert result == post
-    assert repo.get_by_id(post.id) == post
+    assert await repo.get_by_id(post.id) == post
 
 
+@pytest.mark.asyncio
 async def test_get_all_posts():
     repo = InMemoryPostRepository()
     post1 = create_test_post()
     post2 = create_test_post()
-    repo.create(post1)
-    repo.create(post2)
+    await repo.create(post1)
+    await repo.create(post2)
 
     usecase = GetAllPostsUseCase(repo)
     result = await usecase.execute()
@@ -45,10 +50,11 @@ async def test_get_all_posts():
     assert post2 in result
 
 
+@pytest.mark.asyncio
 async def test_get_post_by_id():
     repo = InMemoryPostRepository()
     post = create_test_post()
-    repo.create(post)
+    await repo.create(post)
 
     usecase = GetPostByIdUseCase(repo)
     result = await usecase.execute(post.id)
@@ -56,6 +62,7 @@ async def test_get_post_by_id():
     assert result == post
 
 
+@pytest.mark.asyncio
 async def test_get_post_by_id_not_found():
     repo = InMemoryPostRepository()
     usecase = GetPostByIdUseCase(repo)
@@ -64,10 +71,11 @@ async def test_get_post_by_id_not_found():
     assert result is None
 
 
+@pytest.mark.asyncio
 async def test_update_post():
     repo = InMemoryPostRepository()
     post = create_test_post()
-    repo.create(post)
+    await repo.create(post)
 
     updated = Post(
         id=post.id,
@@ -82,9 +90,11 @@ async def test_update_post():
     result = await usecase.execute(updated)
 
     assert result.title == "Título Atualizado"
-    assert repo.get_by_id(post.id).content == "Novo conteúdo"
+    repo_post = await repo.get_by_id(post.id)
+    assert repo_post.content == "Novo conteúdo"
 
 
+@pytest.mark.asyncio
 async def test_update_post_not_found():
     repo = InMemoryPostRepository()
     post = create_test_post()
@@ -95,17 +105,19 @@ async def test_update_post_not_found():
     assert result is None
 
 
+@pytest.mark.asyncio
 async def test_delete_post():
     repo = InMemoryPostRepository()
     post = create_test_post()
-    repo.create(post)
+    await repo.create(post)
 
     usecase = DeletePostUseCase(repo)
     await usecase.execute(post.id)
 
-    assert repo.get_by_id(post.id) is None
+    assert await repo.get_by_id(post.id) is None
 
 
+@pytest.mark.asyncio
 async def test_delete_post_not_found():
     repo = InMemoryPostRepository()
     usecase = DeletePostUseCase(repo)
