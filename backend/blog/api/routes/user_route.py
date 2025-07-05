@@ -100,19 +100,16 @@ async def login_user(
     summary="Informar os dados do usuário atual",
     description="Retorna os dados do usuário atual.",
 )
-async def get_current_user(
+async def get_me_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    user_repo: UserRepository = Depends(get_user_repository),
-    user: str = Depends(get_current_user),
+    user: User = Depends(get_current_user),
 ):
     try:
-        usecase = GetCurrentUserUseCase(user_repo)
-        result = await usecase.execute(user.id)
         return {
-            "id": result.id,
-            "name": result.name,
-            "email": str(result.email),
-            "role": result.role,
+            "id": user.id,
+            "name": user.name,
+            "email": str(user.email),
+            "role": user.role,
         }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))

@@ -16,9 +16,9 @@ from blog.infra.repositories.sqlalchemy.sqlalchemy_comment_repository import (
 from sqlalchemy.ext.asyncio import AsyncSession
 from blog.infra.database import async_session
 from blog.domain.entities.user import User
+from collections.abc import AsyncGenerator
 
-
-async def get_db_session() -> AsyncSession:
+async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session() as session:
         yield session
 
@@ -31,13 +31,13 @@ async def get_user_repository(
 
 async def get_post_repository(
     db: AsyncSession = Depends(get_db_session),
-) -> SQLAlchemyUserRepository:
+) -> SQLAlchemyPostRepository:
     return SQLAlchemyPostRepository(db)
 
 
 async def get_comment_repository(
     db: AsyncSession = Depends(get_db_session),
-) -> SQLAlchemyUserRepository:
+) -> SQLAlchemyCommentRepository:
     return SQLAlchemyCommentRepository(db)
 
 
@@ -58,13 +58,13 @@ async def get_current_user(
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
-        user_id: str = payload.get("sub")
+        user_id: str = str(payload.get("sub"))
         if user_id is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
 
-    user = await user_repo.get_current_user(user_id)
+    user = await user_repo.get_current_user()
     if user is None:
         raise credentials_exception
     return user

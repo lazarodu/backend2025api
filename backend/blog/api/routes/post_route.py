@@ -56,7 +56,7 @@ async def create_post(
     data: PostCreateInput,
     db: AsyncSession = Depends(get_db_session),
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    user: str = Depends(get_current_user),
+    user: User = Depends(get_current_user),
     post_repo: PostRepository = Depends(get_post_repository),
 ):
     usecase = CreatePostUseCase(post_repo)

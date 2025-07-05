@@ -2,6 +2,7 @@ import pytest
 import datetime
 from httpx import AsyncClient
 
+
 @pytest.mark.asyncio
 async def test_create_and_get_comments(client: AsyncClient):
     # 1. Registro do usuário
@@ -42,7 +43,7 @@ async def test_create_and_get_comments(client: AsyncClient):
     comment_response = await client.post(
         "/comments/",
         json={
-            "post_id": post_id, 
+            "post_id": post_id,
             "comment": "Primeiro comentário!",
             "date": datetime.datetime.now().isoformat(),
         },

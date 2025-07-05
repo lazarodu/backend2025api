@@ -1,3 +1,4 @@
+from datetime import datetime
 class Post:
     def __init__(
         self,
@@ -6,7 +7,7 @@ class Post:
         description: str,
         content: str,
         user_id: str,
-        date: str,
+        date: datetime,
     ):
         self.id = id
         self.title = title

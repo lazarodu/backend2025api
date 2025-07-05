@@ -6,6 +6,7 @@ from blog.usecases.comment.delete_comment import DeleteCommentUseCase
 from blog.usecases.comment.get_comments_by_post import GetCommentsByPostUseCase
 from blog.usecases.comment.get_comments_by_user import GetCommentsByUserUseCase
 from blog.domain.entities.comment import Comment
+from blog.domain.entities.user import User
 import uuid
 from blog.api.schemas.comment_schema import AddCommentInput, CommentOutput
 from blog.domain.repositories.comment_repository import CommentRepository
@@ -30,7 +31,7 @@ async def get_comments_by_post(
     post_id: str, comment_repo: CommentRepository = Depends(get_comment_repository)
 ):
     usecase = GetCommentsByPostUseCase(comment_repo)
-    comments = await usecase.execute(post_id)
+    comments = usecase.execute(post_id)
     return comments
 
 
@@ -38,10 +39,10 @@ async def get_comments_by_post(
 async def get_comments_by_user(
     comment_repo: CommentRepository = Depends(get_comment_repository),
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    user: str = Depends(get_current_user),
+    user: User = Depends(get_current_user),
 ):
     usecase = GetCommentsByUserUseCase(comment_repo)
-    comments = await usecase.execute(user.id)
+    comments = usecase.execute(user.id)
     return comments
 
 
@@ -50,7 +51,7 @@ async def add_comment(
     data: AddCommentInput,
     comment_repo: CommentRepository = Depends(get_comment_repository),
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    user: str = Depends(get_current_user),
+    user: User = Depends(get_current_user),
 ):
     if data.date.tzinfo is not None:
         data.date = data.date.replace(tzinfo=None)
@@ -62,16 +63,16 @@ async def add_comment(
         date=data.date,
     )
     usecase = AddCommentUseCase(comment_repo)
-    added_comment = await usecase.execute(comment)
+    added_comment = usecase.execute(comment)
     return added_comment
 
 
 @router.delete("/{comment_id}")
-async def delete_comment(
+def delete_comment(
     comment_id: str, comment_repo: CommentRepository = Depends(get_comment_repository)
 ):
     usecase = DeleteCommentUseCase(comment_repo)
-    success = await usecase.execute(comment_id)
+    success = usecase.execute(comment_id)
     if not success:
         raise HTTPException(status_code=404, detail="Comment not found")
     return {"message": "Comment deleted successfully"}

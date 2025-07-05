@@ -34,8 +34,10 @@ class SQLAlchemyUserRepository(UserRepository):
             return self._current_user
         return None
 
-    async def get_current_user(self, user_id: str) -> Optional[User]:
-        stmt = select(UserModel).where(UserModel.id == str(user_id))
+    async def get_current_user(self) -> Optional[User]:
+        if self._current_user is None:
+            raise ValueError("Current user is not set. Please log in first.")
+        stmt = select(UserModel).where(UserModel.id == str(self._current_user.id))
         result = await self._session.execute(stmt)
         user = result.scalar_one_or_none()
         if user:
