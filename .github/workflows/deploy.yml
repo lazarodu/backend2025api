@@ -76,15 +76,20 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
 
-      - name: Install dependencies
+      - name: Install Poetry and dependencies
         run: |
           pip install poetry
           poetry install
+        working-directory: ${{ github.workspace }}
+
+      - name: Run Alembic migrations
+        run: |
           poetry run alembic upgrade head
+        working-directory: ${{ github.workspace }}
         env:
-          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
