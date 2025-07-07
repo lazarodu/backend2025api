@@ -16,9 +16,9 @@ class Settings(BaseSettings):
     DATABASE_URL_ALEMBIC: str  # psycopg2 para Alembic
     DATABASE_URL_TEST: str
 
-    PGADMIN_DEFAULT_EMAIL: str
-    PGADMIN_DEFAULT_PASSWORD: str
-    PGADMIN_PORT: int
+    # PGADMIN_DEFAULT_EMAIL: str
+    # PGADMIN_DEFAULT_PASSWORD: str
+    # PGADMIN_PORT: int
 
     SECRET_KEY: str
     ALGORITHM: str
