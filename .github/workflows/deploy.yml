@@ -78,15 +78,15 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Install Poetry and dependencies
+      - name: Instalar dependências com pip
         run: |
-          pip install poetry
-          poetry install
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
         working-directory: ${{ github.workspace }}
 
       - name: Run Alembic migrations
         run: |
-          poetry run alembic upgrade head
+          make migrate-dev
         working-directory: ${{ github.workspace }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
