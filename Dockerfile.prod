@@ -13,7 +13,9 @@ COPY . .
 
 EXPOSE 8080
 
-COPY ../start.sh ./start.sh
+RUN pwd && ls -la
+
+COPY ./start.sh ./start.sh
 RUN chmod +x ./start.sh
 
 CMD ["./start.sh"]
