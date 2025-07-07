@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.security import HTTPBearer
 from blog.api.routes import comment_route, post_route, user_route
 from blog.api.openapi_tags import openapi_tags
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI(
@@ -11,6 +12,19 @@ app = FastAPI(
     contact={"name": "Lázaro Eduardo", "email": "lazaro@exemplo.com"},
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=openapi_tags,
+)
+
+origins = [
+    "http://localhost:5173",  # Vite local
+    "https://frontclean.vercel.app",  # Produção
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # lista de origens confiáveis
+    allow_credentials=True,
+    allow_methods=["*"],  # ou especifique ["GET", "POST"]
+    allow_headers=["*"],
 )
 
 
