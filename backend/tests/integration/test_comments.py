@@ -49,7 +49,6 @@ async def test_create_and_get_comments(client: AsyncClient):
         },
         headers=headers,
     )
-    print(post_response.json())
     assert comment_response.status_code == 200
     comment_data = comment_response.json()
     assert comment_data["comment"] == "Primeiro comentário!"

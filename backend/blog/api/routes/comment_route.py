@@ -31,7 +31,7 @@ async def get_comments_by_post(
     post_id: str, comment_repo: CommentRepository = Depends(get_comment_repository)
 ):
     usecase = GetCommentsByPostUseCase(comment_repo)
-    comments = usecase.execute(post_id)
+    comments = await usecase.execute(post_id)
     return comments
 
 
@@ -42,7 +42,7 @@ async def get_comments_by_user(
     user: User = Depends(get_current_user),
 ):
     usecase = GetCommentsByUserUseCase(comment_repo)
-    comments = usecase.execute(user.id)
+    comments = await usecase.execute(user.id)
     return comments
 
 
@@ -63,16 +63,16 @@ async def add_comment(
         date=data.date,
     )
     usecase = AddCommentUseCase(comment_repo)
-    added_comment = usecase.execute(comment)
+    added_comment = await usecase.execute(comment)
     return added_comment
 
 
 @router.delete("/{comment_id}")
-def delete_comment(
+async def delete_comment(
     comment_id: str, comment_repo: CommentRepository = Depends(get_comment_repository)
 ):
     usecase = DeleteCommentUseCase(comment_repo)
-    success = usecase.execute(comment_id)
+    success = await usecase.execute(comment_id)
     if not success:
         raise HTTPException(status_code=404, detail="Comment not found")
     return {"message": "Comment deleted successfully"}

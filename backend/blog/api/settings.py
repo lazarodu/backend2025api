@@ -31,9 +31,9 @@ class Settings(BaseSettings):
     #     "extra": "ignore"
     # }
 
-    model_config:ClassVar[SettingsConfigDict] = SettingsConfigDict(
-        env_file=".env",
-        extra="ignore"
+    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
+        env_file=".env", extra="ignore"
     )
+
 
 settings = Settings()

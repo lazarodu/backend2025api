@@ -1,7 +1,10 @@
 from datetime import datetime
 
+
 class Comment:
-    def __init__(self, id: str, post_id: str, user_id: str, comment: str, date: datetime):
+    def __init__(
+        self, id: str, post_id: str, user_id: str, comment: str, date: datetime
+    ):
         self.id = id
         self.post_id = post_id
         self.user_id = user_id

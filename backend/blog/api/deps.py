@@ -18,6 +18,7 @@ from blog.infra.database import async_session
 from blog.domain.entities.user import User
 from collections.abc import AsyncGenerator
 
+
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session() as session:
         yield session
@@ -61,6 +62,10 @@ async def get_current_user(
         user_id: str = str(payload.get("sub"))
         if user_id is None:
             raise credentials_exception
+        user = await user_repo.get_by_id(user_id)
+        if user is None:
+            raise credentials_exception
+        await user_repo.set_current_user(user)
     except JWTError:
         raise credentials_exception
 

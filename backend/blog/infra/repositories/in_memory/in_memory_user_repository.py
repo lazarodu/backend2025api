@@ -46,3 +46,10 @@ class InMemoryUserRepository(UserRepository):
             if user.email == email:
                 return user
         return None
+
+    @pytest.mark.asyncio
+    async def get_by_id(self, id: str) -> None:
+        for user in self._users.values():
+            if user.id == id:
+                return user
+        return None

@@ -57,3 +57,9 @@ class SQLAlchemyUserRepository(UserRepository):
         result = await self._session.execute(stmt)
         user_model = result.scalar_one_or_none()
         return user_model.to_entity() if user_model else None
+
+    async def get_by_id(self, id: str) -> Optional[User]:
+        stmt = select(UserModel).where(UserModel.id == str(id))
+        result = await self._session.execute(stmt)
+        user_model = result.scalar_one_or_none()
+        return user_model.to_entity() if user_model else None
