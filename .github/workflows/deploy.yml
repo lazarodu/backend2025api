@@ -85,9 +85,10 @@ jobs:
 
       - name: Run Alembic migrations
         run: |
+          cd backend
           pwd
           ls -la
-          backend/alembic upgrade head
+          alembic upgrade head
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
