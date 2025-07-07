@@ -11,7 +11,7 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
-RUN make migrate-dev
+RUN alembic upgrade head
 
 EXPOSE 8080
 
