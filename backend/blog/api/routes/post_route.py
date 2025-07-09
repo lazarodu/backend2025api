@@ -43,7 +43,6 @@ async def get_all_posts(
 async def get_post_by_id(
     post_id: str,
     post_repo: PostRepository = Depends(get_post_repository),
-    credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
     usecase = GetPostByIdUseCase(post_repo)
     post = await usecase.execute(post_id)
@@ -100,7 +99,7 @@ async def update_post(
     )
     usecase_update = UpdatePostUseCase(post_repo)
     result = await usecase_update.execute(updated_post)
-    return result
+    return post_to_output(result)
 
 
 @router.delete("/{post_id}")
