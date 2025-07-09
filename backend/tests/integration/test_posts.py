@@ -27,7 +27,7 @@ async def test_create_and_get_posts(client: AsyncClient):
         "content": "Conteúdo completo do post",
         "date": datetime.datetime.now().isoformat(),
     }
-   
+
     response = await client.post(
         "/posts/",
         json=post_data,

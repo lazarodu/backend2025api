@@ -41,4 +41,5 @@ class CommentModel(Base):
             post_id=self.post_id,
             user_id=self.user_id,
             date=self.date,
+            user=self.user.to_entity(),
         )

@@ -73,7 +73,7 @@ async def create_post(
         date=data.date,
     )
     created_post = await usecase.execute(post)
-    if created_post is None:
+    if not created_post:
         raise HTTPException(status_code=404, detail="Post not created")
     return post_to_output(created_post)
 

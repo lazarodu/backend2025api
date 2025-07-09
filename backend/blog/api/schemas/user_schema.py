@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Literal
+from blog.domain.entities.user import User
 
 
 class RegisterUserInput(BaseModel):
@@ -43,3 +44,12 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str
     user: UserOutput
+
+
+def user_to_output(user: User) -> UserOutput:
+    return UserOutput(
+        id=user.id,
+        name=user.name,
+        email=str(user.email),
+        role=user.role,
+    )

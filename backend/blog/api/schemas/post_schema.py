@@ -2,8 +2,8 @@ from pydantic import BaseModel, Field, field_validator
 from typing import Optional, Any
 from datetime import datetime
 from blog.api.schemas.user_schema import UserOutput
-from blog.domain.entities.user import User
 from blog.domain.entities.post import Post
+from blog.api.schemas.user_schema import user_to_output
 
 
 class PostCreateInput(BaseModel):
@@ -46,14 +46,6 @@ class PostOutput(BaseModel):
         )
 
 
-def user_to_output(user: User) -> UserOutput:
-    return UserOutput(
-        id=user.id,
-        name=user.name,
-        email=str(user.email),
-        role=user.role,
-    )
-
 def post_to_output(post: Post) -> PostOutput:
     return PostOutput(
         id=post.id,
@@ -61,8 +53,9 @@ def post_to_output(post: Post) -> PostOutput:
         content=post.content,
         description=post.description,
         date=post.date,
-        user=user_to_output(post.user) if post.user else None
+        user=user_to_output(post.user) if post.user else None,
     )
+
 
 def posts_to_output(posts: list[Post]) -> list[PostOutput]:
     return [post_to_output(post) for post in posts]

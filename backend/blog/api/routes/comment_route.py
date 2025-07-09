@@ -21,6 +21,7 @@ from blog.infra.repositories.sqlalchemy.sqlalchemy_comment_repository import (
     SQLAlchemyCommentRepository,
 )
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from blog.api.schemas.comment_schema import comment_to_output, comments_to_output
 
 security = HTTPBearer()
 router = APIRouter()
@@ -32,7 +33,7 @@ async def get_comments_by_post(
 ):
     usecase = GetCommentsByPostUseCase(comment_repo)
     comments = await usecase.execute(post_id)
-    return comments
+    return comments_to_output(comments)
 
 
 @router.get("/user", response_model=List[CommentOutput])
@@ -43,7 +44,7 @@ async def get_comments_by_user(
 ):
     usecase = GetCommentsByUserUseCase(comment_repo)
     comments = await usecase.execute(user.id)
-    return comments
+    return comments_to_output(comments)
 
 
 @router.post("/", response_model=CommentOutput)
@@ -64,7 +65,9 @@ async def add_comment(
     )
     usecase = AddCommentUseCase(comment_repo)
     added_comment = await usecase.execute(comment)
-    return added_comment
+    if not added_comment:
+        raise HTTPException(status_code=400, detail="Failed to add comment")
+    return comment_to_output(added_comment)
 
 
 @router.delete("/{comment_id}")

@@ -48,5 +48,5 @@ class PostModel(Base):
             content=self.content,
             user_id=self.user_id,
             date=self.date,
-            user=self.user.to_entity() if self.user else None,
+            user=self.user.to_entity(),
         )

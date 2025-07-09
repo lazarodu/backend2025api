@@ -5,6 +5,7 @@ from blog.domain.entities.comment import Comment
 from blog.domain.repositories.comment_repository import CommentRepository
 from blog.infra.models.comment_model import CommentModel
 from blog.infra.models.post_model import PostModel
+from sqlalchemy.orm import joinedload
 
 
 class SQLAlchemyCommentRepository(CommentRepository):
@@ -13,7 +14,9 @@ class SQLAlchemyCommentRepository(CommentRepository):
 
     async def get_comments_by_post(self, post_id: str) -> List[Comment]:
         result = await self._session.execute(
-            select(CommentModel).where(CommentModel.post_id == post_id)
+            select(CommentModel)
+            .options(joinedload(CommentModel.user))
+            .where(CommentModel.post_id == post_id)
         )
         return [c.to_entity() for c in result.unique().scalars().all()]
 
