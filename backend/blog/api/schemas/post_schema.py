@@ -20,6 +20,12 @@ class PostUpdateInput(BaseModel):
     content: str = Field(..., min_length=20, description="Conteúdo do post")
 
 
+class UserInPost(BaseModel):
+    id: str
+    name: str
+    email: str
+
+
 class PostOutput(BaseModel):
     id: str = Field(..., description="ID do post")
     title: str = Field(..., min_length=3, max_length=100, description="Título do post")
@@ -27,8 +33,8 @@ class PostOutput(BaseModel):
         ..., min_length=10, max_length=300, description="Descrição do post"
     )
     content: str = Field(..., min_length=20, description="Conteúdo do post")
-    user_id: str = Field(..., description="ID do usuário que está postando")
     date: datetime = Field(..., description="Data de criação do post")
+    user: UserInPost = Field(..., description="Dados do usuário que está postando")
 
     @classmethod
     def from_entity(cls, post):

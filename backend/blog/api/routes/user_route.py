@@ -17,8 +17,8 @@ from blog.api.schemas.user_schema import (
     RegisterUserInput,
     UserOutput,
     MessageUserResponse,
+    TokenResponse,
 )
-from blog.api.schemas.token_schema import TokenResponse
 from blog.api.security import create_access_token
 from blog.domain.repositories.user_repository import UserRepository
 from blog.api.schemas.user_schema import LoginUserInput
@@ -82,7 +82,9 @@ async def login_user(
         if not user:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         token = create_access_token(data={"sub": user.id})
-        return TokenResponse(access_token=token, token_type="bearer")
+        return TokenResponse(
+            access_token=token, token_type="bearer", user=UserOutput.from_entity(user)
+        )
     except PasswordValidationError as p:
         raise HTTPException(status_code=400, detail=str(p))
     except ValueError as e:

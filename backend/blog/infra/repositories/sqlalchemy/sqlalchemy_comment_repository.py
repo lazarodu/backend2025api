@@ -15,18 +15,18 @@ class SQLAlchemyCommentRepository(CommentRepository):
         result = await self._session.execute(
             select(CommentModel).where(CommentModel.post_id == post_id)
         )
-        return [c.to_entity() for c in result.scalars().all()]
+        return [c.to_entity() for c in result.unique().scalars().all()]
 
     async def get_comments_by_user(self, user_id: str) -> List[Comment]:
         result = await self._session.execute(
             select(CommentModel).where(CommentModel.user_id == user_id)
         )
-        return [c.to_entity() for c in result.scalars().all()]
+        return [c.to_entity() for c in result.unique().scalars().all()]
 
     async def add_comment(self, comment: Comment) -> Comment:
         stmt = select(PostModel).where(PostModel.id == str(comment.post_id))
         result = await self._session.execute(stmt)
-        post = result.scalar_one_or_none()
+        post = result.unique().scalar_one_or_none()
         if not post:
             raise ValueError("Post not found for the given comment")
         db_comment = CommentModel.from_entity(comment)

@@ -4,6 +4,7 @@ from sqlalchemy import select, update, delete
 from blog.domain.entities.post import Post
 from blog.domain.repositories.post_repository import PostRepository
 from blog.infra.models.post_model import PostModel
+from sqlalchemy.orm import joinedload
 
 
 class SQLAlchemyPostRepository(PostRepository):
@@ -11,14 +12,19 @@ class SQLAlchemyPostRepository(PostRepository):
         self._session = session
 
     async def get_all(self) -> List[Post]:
-        result = await self._session.execute(select(PostModel))
-        return [post.to_entity() for post in result.scalars().all()]
+        result = await self._session.execute(
+            select(PostModel).options(joinedload(PostModel.user))
+        )
+        return [post.to_entity() for post in result.unique().scalars().all()]
 
     async def get_by_id(self, post_id: str) -> Optional[Post]:
         result = await self._session.execute(
-            select(PostModel).where(PostModel.id == post_id)
+            select(PostModel)
+            .options(joinedload(PostModel.user))
+            .options(joinedload(PostModel.comments))
+            .where(PostModel.id == post_id)
         )
-        post = result.scalar_one_or_none()
+        post = result.unique().scalar_one_or_none()
         return post.to_entity() if post else None
 
     async def create(self, post: Post) -> Post:
@@ -41,9 +47,14 @@ class SQLAlchemyPostRepository(PostRepository):
             )
             .returning(PostModel)
         )
-        result = await self._session.execute(stmt)
+        await self._session.execute(stmt)
         await self._session.commit()
-        updated = result.scalar_one_or_none()
+        result = await self._session.execute(
+            select(PostModel)
+            .options(joinedload(PostModel.user), joinedload(PostModel.comments))
+            .where(PostModel.id == post.id)
+        )
+        updated = result.unique().scalar_one_or_none()
         return updated.to_entity() if updated else None
 
     async def delete(self, post_id: str) -> None:

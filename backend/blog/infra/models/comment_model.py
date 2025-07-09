@@ -13,12 +13,16 @@ class CommentModel(Base):
         sa.String, primary_key=True, default=lambda: str(uuid.uuid4())
     )
     comment: Mapped[str] = mapped_column(sa.Text, nullable=False)
-    post_id: Mapped[str] = mapped_column(sa.String, sa.ForeignKey("posts.id"))
-    user_id: Mapped[str] = mapped_column(sa.String, sa.ForeignKey("users.id"))
+    post_id: Mapped[str] = mapped_column(
+        sa.String, sa.ForeignKey("posts.id", ondelete="CASCADE")
+    )
+    user_id: Mapped[str] = mapped_column(
+        sa.String, sa.ForeignKey("users.id", ondelete="CASCADE")
+    )
     date: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.now())
 
-    post = relationship("PostModel", back_populates="comments")
-    user = relationship("UserModel", back_populates="comments")
+    post = relationship("PostModel", back_populates="comments", lazy="joined")
+    user = relationship("UserModel", back_populates="comments", lazy="joined")
 
     @classmethod
     def from_entity(cls, entity: Comment) -> "CommentModel":

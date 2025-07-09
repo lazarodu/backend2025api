@@ -37,3 +37,9 @@ class UserOutput(BaseModel):
 class MessageUserResponse(BaseModel):
     message: str
     user: UserOutput
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: UserOutput

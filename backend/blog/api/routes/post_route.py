@@ -46,6 +46,7 @@ async def get_post_by_id(
 ):
     usecase = GetPostByIdUseCase(post_repo)
     post = await usecase.execute(post_id)
+    print(f"Retrieved post: {post}")
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     return post

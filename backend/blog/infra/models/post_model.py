@@ -15,12 +15,18 @@ class PostModel(Base):
     title: Mapped[str] = mapped_column(sa.String, nullable=False)
     description: Mapped[str] = mapped_column(sa.String, nullable=False)
     content: Mapped[str] = mapped_column(sa.Text, nullable=False)
-    user_id: Mapped[str] = mapped_column(sa.String, sa.ForeignKey("users.id"))
+    user_id: Mapped[str] = mapped_column(
+        sa.String, sa.ForeignKey("users.id", ondelete="CASCADE")
+    )
     date: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.now())
 
-    user = relationship("UserModel", back_populates="posts")
+    user = relationship("UserModel", back_populates="posts", lazy="joined")
     comments = relationship(
-        "CommentModel", back_populates="post", cascade="all, delete"
+        "CommentModel",
+        back_populates="post",
+        lazy="joined",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
 
     @classmethod
@@ -42,4 +48,5 @@ class PostModel(Base):
             content=self.content,
             user_id=self.user_id,
             date=self.date,
+            user=self.user.to_entity() if self.user else None,
         )
