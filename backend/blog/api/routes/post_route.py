@@ -24,6 +24,7 @@ from blog.infra.repositories.sqlalchemy.sqlalchemy_post_repository import (
     SQLAlchemyPostRepository,
 )
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from blog.api.schemas.post_schema import post_to_output, posts_to_output
 
 security = HTTPBearer()
 router = APIRouter()
@@ -35,7 +36,7 @@ async def get_all_posts(
 ):
     usecase = GetAllPostsUseCase(post_repo)
     posts = await usecase.execute()
-    return posts
+    return posts_to_output(posts)
 
 
 @router.get("/{post_id}", response_model=PostOutput)
@@ -49,7 +50,7 @@ async def get_post_by_id(
     print(f"Retrieved post: {post}")
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
-    return post
+    return post_to_output(post)
 
 
 @router.post("/", response_model=PostOutput)
@@ -72,7 +73,9 @@ async def create_post(
         date=data.date,
     )
     created_post = await usecase.execute(post)
-    return created_post
+    if created_post is None:
+        raise HTTPException(status_code=404, detail="Post not created")
+    return post_to_output(created_post)
 
 
 @router.put("/{post_id}", response_model=PostOutput)
