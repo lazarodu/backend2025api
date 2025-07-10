@@ -12,7 +12,7 @@ app = FastAPI(
     contact={"name": "Lázaro Eduardo", "email": "lazaro@exemplo.com"},
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=openapi_tags,
-    redirect_slashes=True
+    redirect_slashes=True,
 )
 
 origins = [

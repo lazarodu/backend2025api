@@ -53,7 +53,7 @@ async def register_user(
         )
         await usecase.execute(user)
         return MessageOutput(
-            message="User registered successfully" #, user=UserOutput.from_entity(result)
+            message="User registered successfully"  # , user=UserOutput.from_entity(result)
         )
     except PasswordValidationError as p:
         raise HTTPException(status_code=400, detail=str(p))
