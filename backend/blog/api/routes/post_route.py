@@ -99,6 +99,8 @@ async def update_post(
     )
     usecase_update = UpdatePostUseCase(post_repo)
     result = await usecase_update.execute(updated_post)
+    if not result:
+        raise HTTPException(status_code=400, detail="Post not updated")
     return post_to_output(result)
 
 
