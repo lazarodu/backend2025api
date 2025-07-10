@@ -16,9 +16,9 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from blog.api.schemas.user_schema import (
     RegisterUserInput,
     UserOutput,
-    MessageUserResponse,
     TokenResponse,
 )
+from blog.api.schemas.message_schema import MessageOutput
 from blog.api.security import create_access_token
 from blog.domain.repositories.user_repository import UserRepository
 from blog.api.schemas.user_schema import LoginUserInput
@@ -34,7 +34,7 @@ router = APIRouter()
 
 @router.post(
     "/register",
-    response_model=MessageUserResponse,
+    response_model=MessageOutput,
     summary="Registrar novo usuário",
     description="Cria um novo usuário com nome, email e senha forte.",
 )
@@ -51,9 +51,9 @@ async def register_user(
             password=Password(data.password),
             role=data.role,
         )
-        result = await usecase.execute(user)
-        return MessageUserResponse(
-            message="User registered successfully", user=UserOutput.from_entity(result)
+        await usecase.execute(user)
+        return MessageOutput(
+            message="User registered successfully" #, user=UserOutput.from_entity(result)
         )
     except PasswordValidationError as p:
         raise HTTPException(status_code=400, detail=str(p))
